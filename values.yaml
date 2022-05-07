@@ -104,7 +104,7 @@ labels: {}
 # Ingress configuration
 ingress:
   # Enable ingress resource
-  enabled: true
+  enabled: false
   
   apiVersion: networking.k8s.io/v1
 
