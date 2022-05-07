@@ -104,80 +104,21 @@ labels: {}
 # Ingress configuration
 ingress:
   # Enable ingress resource
-  enabled: false
+  enabled: true
+  
+  apiVersion: networking.k8s.io/v1
 
   # Configs for the Ingress of the web Service
   web:
-    # Annotations for the web Ingress
     annotations: {}
-
-    # The path for the web Ingress
     path: "/"
-
-    # The pathType for the above path (used only with Kubernetes v1.19 and above)
     pathType: "ImplementationSpecific"
+    ingressClassName: "alb"
 
-    # The hostname for the web Ingress (Deprecated - renamed to `ingress.web.hosts`)
-    host: ""
-
-    # The hostnames or hosts configuration for the web Ingress
-    hosts: []
-    # - name: ""
-    #   # configs for web Ingress TLS
-    #   tls:
-    #     # Enable TLS termination for the web Ingress
-    #     enabled: false
-    #     # the name of a pre-created Secret containing a TLS private key and certificate
-    #     secretName: ""
-
-    # The Ingress Class for the web Ingress (used only with Kubernetes v1.19 and above)
-    ingressClassName: ""
-
-    # configs for web Ingress TLS (Deprecated - renamed to `ingress.web.hosts[*].tls`)
-    tls:
-      # Enable TLS termination for the web Ingress
-      enabled: false
-      # the name of a pre-created Secret containing a TLS private key and certificate
-      secretName: ""
-
-    # HTTP paths to add to the web Ingress before the default path
-    precedingPaths: []
-
-    # Http paths to add to the web Ingress after the default path
-    succeedingPaths: []
-
-  # Configs for the Ingress of the flower Service
   flower:
-    # Annotations for the flower Ingress
-    annotations: {}
-
-    # The path for the flower Ingress
-    path: "/"
-
-    # The pathType for the above path (used only with Kubernetes v1.19 and above)
+    path: "/flower"
     pathType: "ImplementationSpecific"
-
-    # The hostname for the flower Ingress (Deprecated - renamed to `ingress.flower.hosts`)
-    host: ""
-
-    # The hostnames or hosts configuration for the flower Ingress
-    hosts: []
-    # - name: ""
-    #   tls:
-    #     # Enable TLS termination for the flower Ingress
-    #     enabled: false
-    #     # the name of a pre-created Secret containing a TLS private key and certificate
-    #     secretName: ""
-
-    # The Ingress Class for the flower Ingress (used only with Kubernetes v1.19 and above)
-    ingressClassName: ""
-
-    # configs for flower Ingress TLS (Deprecated - renamed to `ingress.flower.hosts[*].tls`)
-    tls:
-      # Enable TLS termination for the flower Ingress
-      enabled: false
-      # the name of a pre-created Secret containing a TLS private key and certificate
-      secretName: ""
+    ingressClassName: "alb"
 
 # Network policy configuration
 networkPolicies:
@@ -1543,56 +1484,16 @@ dags:
     ## the name of an existing PVC to use
     existingClaim:
   gitSync:
-    enabled: false
-
-    # git repo clone url
-    # ssh examples ssh://git@github.com/apache/airflow.git
-    # git@github.com:apache/airflow.git
-    # https example: https://github.com/apache/airflow.git
-    repo: https://github.com/apache/airflow.git
-    branch: v2-2-stable
+    enabled: true
+    repo: https://github.com/RoybertParada/airflow-k8s.git
+    branch: master
     rev: HEAD
     depth: 1
     # the number of consecutive failures allowed before aborting
     maxFailures: 0
     # subpath within the repo where dags are located
     # should be "" if dags are at repo root
-    subPath: "tests/dags"
-    # if your repo needs a user name password
-    # you can load them to a k8s secret like the one below
-    #   ---
-    #   apiVersion: v1
-    #   kind: Secret
-    #   metadata:
-    #     name: git-credentials
-    #   data:
-    #     GIT_SYNC_USERNAME: <base64_encoded_git_username>
-    #     GIT_SYNC_PASSWORD: <base64_encoded_git_password>
-    # and specify the name of the secret below
-    #
-    # credentialsSecret: git-credentials
-    #
-    #
-    # If you are using an ssh clone url, you can load
-    # the ssh private key to a k8s secret like the one below
-    #   ---
-    #   apiVersion: v1
-    #   kind: Secret
-    #   metadata:
-    #     name: airflow-ssh-secret
-    #   data:
-    #     # key needs to be gitSshKey
-    #     gitSshKey: <base64_encoded_data>
-    # and specify the name of the secret below
-    # sshKeySecret: airflow-ssh-secret
-    #
-    # If you are using an ssh private key, you can additionally
-    # specify the content of your known_hosts file, example:
-    #
-    # knownHosts: |
-    #    <host1>,<ip1> <key1>
-    #    <host2>,<ip2> <key2>
-    # interval between git sync attempts in seconds
+    subPath: "dags/"
     wait: 60
     containerName: git-sync
     uid: 65533
